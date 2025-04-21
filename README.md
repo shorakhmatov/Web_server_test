@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Система управления движением денежных средств (ДДС)
 
 Веб-приложение для учета, управления и анализа поступлений и списаний денежных средств компании или частного лица.
@@ -78,3 +79,6 @@ python manage.py runserver
 ![Список транзакций](screenshots/transactions.png)
 ![Создание транзакции](screenshots/create_transaction.png)
 ![Справочники](screenshots/references.png)
+=======
+# Web_server_test
+>>>>>>> 8a8959cb4ee2a900eb8f6ccfa8029d3218ce17c3

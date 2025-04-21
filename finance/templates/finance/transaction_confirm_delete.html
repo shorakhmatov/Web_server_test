@@ -1,0 +1,22 @@
+{% extends 'finance/base.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}Удаление транзакции{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title mb-4">Удаление транзакции</h1>
+                <p>Вы уверены, что хотите удалить транзакцию от {{ object.date_created|date:"d.m.Y" }} на сумму {{ object.amount }} ₽?</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                    <a href="{% url 'transaction_list' %}" class="btn btn-secondary">Отмена</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

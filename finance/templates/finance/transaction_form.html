@@ -1,0 +1,66 @@
+{% extends 'finance/base.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}
+    {% if form.instance.pk %}
+        Редактирование транзакции
+    {% else %}
+        Создание транзакции
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title mb-4">
+                    {% if form.instance.pk %}
+                        Редактирование транзакции
+                    {% else %}
+                        Создание транзакции
+                    {% endif %}
+                </h1>
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                        <a href="{% url 'transaction_list' %}" class="btn btn-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const categorySelect = document.getElementById('id_category');
+        const subcategorySelect = document.getElementById('id_subcategory');
+        const transactionTypeSelect = document.getElementById('id_transaction_type');
+
+        function updateSubcategories() {
+            const categoryId = categorySelect.value;
+            if (categoryId) {
+                fetch(`/ajax/subcategories/?category_id=${categoryId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        subcategorySelect.innerHTML = '';
+                        data.forEach(item => {
+                            const option = new Option(item.name, item.id);
+                            subcategorySelect.add(option);
+                        });
+                    });
+            } else {
+                subcategorySelect.innerHTML = '';
+            }
+        }
+
+        categorySelect.addEventListener('change', updateSubcategories);
+    });
+</script>
+{% endblock %}

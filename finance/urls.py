@@ -8,4 +8,5 @@ urlpatterns = [
     path('transaction/<int:pk>/delete/', views.TransactionDeleteView.as_view(), name='transaction_delete'),
     path('references/', views.ReferenceListView.as_view(), name='reference_list'),
     path('ajax/subcategories/', views.get_subcategories, name='ajax_subcategories'),
+    path('ajax/categories/', views.get_categories, name='ajax_categories'),
 ]

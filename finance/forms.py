@@ -23,6 +23,26 @@ class TransactionForm(forms.ModelForm):
         else:
             self.fields['subcategory'].queryset = Subcategory.objects.none()
 
+    def clean(self):
+        cleaned_data = super().clean()
+        transaction_type = cleaned_data.get('transaction_type')
+        category = cleaned_data.get('category')
+        subcategory = cleaned_data.get('subcategory')
+
+        if transaction_type and category:
+            if category.transaction_type != transaction_type:
+                raise forms.ValidationError(
+                    'Категория не соответствует выбранному типу транзакции'
+                )
+
+        if category and subcategory:
+            if subcategory.category != category:
+                raise forms.ValidationError(
+                    'Подкатегория не соответствует выбранной категории'
+                )
+
+        return cleaned_data
+
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category

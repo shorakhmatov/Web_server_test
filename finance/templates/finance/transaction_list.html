@@ -17,16 +17,62 @@
     </div>
 </form>
 
+<!-- Summary cards -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h5 class="card-title">Поступления</h5>
+                <p class="card-text h3">{{ income_total|floatformat:2 }} ₽</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-danger text-white">
+            <div class="card-body">
+                <h5 class="card-title">Расходы</h5>
+                <p class="card-text h3">{{ expense_total|floatformat:2 }} ₽</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card {% if balance >= 0 %}bg-primary{% else %}bg-warning{% endif %} text-white">
+            <div class="card-body">
+                <h5 class="card-title">Баланс</h5>
+                <p class="card-text h3">{{ balance|floatformat:2 }} ₽</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Дата</th>
+                <th>
+                    <a href="?{% if request.GET.sort == 'date_created' %}&sort=-date_created{% else %}&sort=date_created{% endif %}" class="text-dark text-decoration-none">
+                        Дата
+                        {% if request.GET.sort == 'date_created' %}
+                            <i class="bi bi-arrow-up"></i>
+                        {% elif request.GET.sort == '-date_created' %}
+                            <i class="bi bi-arrow-down"></i>
+                        {% endif %}
+                    </a>
+                </th>
                 <th>Статус</th>
                 <th>Тип</th>
                 <th>Категория</th>
                 <th>Подкатегория</th>
-                <th>Сумма</th>
+                <th>
+                    <a href="?{% if request.GET.sort == 'amount' %}&sort=-amount{% else %}&sort=amount{% endif %}" class="text-dark text-decoration-none">
+                        Сумма
+                        {% if request.GET.sort == 'amount' %}
+                            <i class="bi bi-arrow-up"></i>
+                        {% elif request.GET.sort == '-amount' %}
+                            <i class="bi bi-arrow-down"></i>
+                        {% endif %}
+                    </a>
+                </th>
                 <th>Комментарий</th>
                 <th>Действия</th>
             </tr>

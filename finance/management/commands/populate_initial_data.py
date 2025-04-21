@@ -19,6 +19,27 @@ class Command(BaseCommand):
 
         # Create categories and subcategories
         expense_type = TransactionType.objects.get(name='Списание')
+        income_type = TransactionType.objects.get(name='Пополнение')
+        
+        # Income categories
+        income_categories = {
+            'Продажи': ['Товары', 'Услуги'],
+            'Инвестиции': ['Дивиденды', 'Проценты по вкладам'],
+            'Прочие доходы': ['Возврат средств', 'Подарки']
+        }
+        
+        for cat_name, subcats in income_categories.items():
+            cat, _ = Category.objects.get_or_create(
+                name=cat_name,
+                transaction_type=income_type
+            )
+            for subcat in subcats:
+                Subcategory.objects.get_or_create(
+                    name=subcat,
+                    category=cat
+                )
+        
+        # Expense categories
         
         # Infrastructure category
         infra_cat, _ = Category.objects.get_or_create(

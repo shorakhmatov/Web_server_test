@@ -24,6 +24,7 @@
 
                 <form method="post" novalidate>
                     {% csrf_token %}
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                     {% bootstrap_form form %}
                     <div class="mt-3">
                         <button type="submit" class="btn btn-primary">Сохранить</button>
@@ -42,25 +43,86 @@
         const categorySelect = document.getElementById('id_category');
         const subcategorySelect = document.getElementById('id_subcategory');
         const transactionTypeSelect = document.getElementById('id_transaction_type');
+        const form = document.querySelector('form');
 
+        // Функция для обновления подкатегорий
         function updateSubcategories() {
             const categoryId = categorySelect.value;
             if (categoryId) {
                 fetch(`/ajax/subcategories/?category_id=${categoryId}`)
                     .then(response => response.json())
                     .then(data => {
-                        subcategorySelect.innerHTML = '';
+                        subcategorySelect.innerHTML = '<option value="">---------</option>';
                         data.forEach(item => {
                             const option = new Option(item.name, item.id);
                             subcategorySelect.add(option);
                         });
                     });
             } else {
-                subcategorySelect.innerHTML = '';
+                subcategorySelect.innerHTML = '<option value="">---------</option>';
             }
         }
 
+        // Функция для обновления категорий
+        function updateCategories() {
+            const typeId = transactionTypeSelect.value;
+            if (typeId) {
+                fetch(`/ajax/categories/?type_id=${typeId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        categorySelect.innerHTML = '<option value="">---------</option>';
+                        data.forEach(item => {
+                            const option = new Option(item.name, item.id);
+                            categorySelect.add(option);
+                        });
+                        categorySelect.dispatchEvent(new Event('change'));
+                    });
+            } else {
+                categorySelect.innerHTML = '<option value="">---------</option>';
+                categorySelect.dispatchEvent(new Event('change'));
+            }
+        }
+
+        // Клиентская валидация перед отправкой формы
+        form.addEventListener('submit', function(e) {
+            const requiredFields = ['transaction_type', 'category', 'subcategory', 'amount'];
+            let hasError = false;
+
+            requiredFields.forEach(field => {
+                const input = document.getElementById(`id_${field}`);
+                const value = input.value.trim();
+                
+                if (!value) {
+                    input.classList.add('is-invalid');
+                    if (!input.nextElementSibling || !input.nextElementSibling.classList.contains('invalid-feedback')) {
+                        const feedback = document.createElement('div');
+                        feedback.className = 'invalid-feedback';
+                        feedback.textContent = 'Это поле обязательно для заполнения';
+                        input.parentNode.appendChild(feedback);
+                    }
+                    hasError = true;
+                } else {
+                    input.classList.remove('is-invalid');
+                    const feedback = input.nextElementSibling;
+                    if (feedback && feedback.classList.contains('invalid-feedback')) {
+                        feedback.remove();
+                    }
+                }
+            });
+
+            if (hasError) {
+                e.preventDefault();
+            }
+        });
+
+        // Обработчики событий
+        transactionTypeSelect.addEventListener('change', updateCategories);
         categorySelect.addEventListener('change', updateSubcategories);
+        
+        // Инициализация при загрузке страницы
+        if (transactionTypeSelect.value) {
+            updateCategories();
+        }
     });
 </script>
 {% endblock %}
